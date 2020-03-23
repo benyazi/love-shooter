@@ -1,5 +1,5 @@
 local system = Tiny.processingSystem({
-  filter = Tiny.filter('weapon&isPlayer')})
+  filter = Tiny.filter('weapon&isEnemy&activatedEnemy')})
 
 function system:onAdd(e)
 
@@ -14,12 +14,10 @@ function system:process(e,dt)
     World:notifyChange(e)
     return
   end
-  if love.mouse.isDown(1) and e.weapon.store > 0 then 
+  if e.weapon.store > 0 then 
     e.weapon.reloadTimer = e.weapon.reloadTime
-    e.weapon.store = e.weapon.store - e.weapon.storePerOne
-    local cameraX,cameraY = love.mouse.getPosition()
-    local worldX, worldY = Camera:worldCoords(cameraX,cameraY)
-    local rad = math.atan2(worldY-e.position.y,worldX-e.position.x)
+    -- e.weapon.store = e.weapon.store - e.weapon.storePerOne
+    local rad = e.enemyWeapon.rad
     e.createWeaponEvent = {
       rad = rad,
       weaponData = e.weapon,

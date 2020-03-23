@@ -6,13 +6,17 @@ function system:onAdd(e)
 end
 
 local enemyFilter = function(item)
-  if item.isEnemy then
+  if item.health then
     return 'touch'
   end
   -- else return nil
 end
 
 function system:process(e,dt)
+  if e.bullet.damageTimer > 0 then 
+    e.bullet.damageTimer = e.bullet.damageTimer - dt
+    return
+  end
   local items, len = World.physics:queryPoint(e.position.x, e.position.y, enemyFilter)
   local touched = false
   for k,v in pairs(items) do

@@ -7,8 +7,11 @@ end
 
 function system:process(e)
   if e.health < 0 then 
-    World:removeEntity(e)
-    e = nil
+    if e.isPlayer then 
+    else 
+      World:removeEntity(e)
+      e = nil
+    end
   end
 end
 

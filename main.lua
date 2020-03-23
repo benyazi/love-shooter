@@ -22,8 +22,11 @@ Systems = require.tree('src.systems')
 World = world:new(
   Bump.newWorld(32),
   Systems.drag.DragThing,
+  Systems.enemy.ActivateEnemy,
   Systems.weapon.CreateBulletWeapon,
   Systems.weapon.RunWeapon,
+  Systems.weapon.RunWeaponEnemy,
+  Systems.weapon.ChangeWeaponEnemyPosition,
   Systems.weapon.RunBullet,
   Systems.weapon.CheckCollisionBullet,
   Systems.health.CheckHealth,
@@ -59,9 +62,10 @@ function love.load()
 
 
   for i=1,10 do
-    local enemy = Entities.Enemy(
-      10 * love.math.random(0, 64),
-      10 * love.math.random(0, 64))
+    local enemyX, enemyY = 10 * love.math.random(0, 64), 10 * love.math.random(0, 64)
+    local enemy = Entities.Enemy(enemyX,enemyY)
+    local weaponData = Entities.weapon.Weapon1(enemyX,enemyY)
+    enemy.weapon = weaponData.dragWeapon
     World:addEntity(enemy)
   end
 

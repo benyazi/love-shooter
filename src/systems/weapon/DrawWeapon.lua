@@ -4,9 +4,14 @@ local system = Tiny.processingSystem({
 
 function system:process(e)
   local x,y = e.position.x+24, e.position.y+24 
-  local cameraX,cameraY = love.mouse.getPosition()
-  local worldX, worldY = Camera:worldCoords(cameraX,cameraY)
-  local rad = math.atan2(worldY-y,worldX-x)
+  local rad = math.pi
+  if e.isPlayer then 
+    local cameraX,cameraY = love.mouse.getPosition()
+    local worldX, worldY = Camera:worldCoords(cameraX,cameraY)
+    rad = math.atan2(worldY-y,worldX-x)
+  else 
+    rad = e.enemyWeapon.rad
+  end
   local flip = 1
   if rad > math.pi/2 and rad < (math.pi*3)/2 then 
     flip = -1

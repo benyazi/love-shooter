@@ -12,29 +12,27 @@ function system:process(e)
     local startRad = e.createWeaponEvent.rad - e.createWeaponEvent.weaponData.scatter/2
     local stepRad = e.createWeaponEvent.weaponData.scatter/e.createWeaponEvent.weaponData.bulletCount
     for i=1,e.createWeaponEvent.weaponData.bulletCount do
-      local bullet = {
-        bullet = {
-          rad = startRad + stepRad*i,
-          weaponData = e.createWeaponEvent.weaponData,
-          speed = e.createWeaponEvent.speed,
-          lifeTimer = e.createWeaponEvent.bulletLifeTime,
-          damage = e.createWeaponEvent.damage
-        },
-        position = {x = x, y = y}
+      local bullet = Entities.weapon.Bullet1(x,y)
+      bullet.bullet = {
+        rad = startRad + stepRad*i,
+        weaponData = e.createWeaponEvent.weaponData,
+        speed = e.createWeaponEvent.speed,
+        lifeTimer = e.createWeaponEvent.bulletLifeTime,
+        damage = e.createWeaponEvent.damage,
+        damageTimer = 0.2
       }
       World:addEntity(bullet)
     end
   else
-    local bullet = {
-      bullet = {
+    local bullet = Entities.weapon.Bullet1(x,y)
+    bullet.bullet = {
         rad = e.createWeaponEvent.rad,
         weaponData = e.createWeaponEvent.weaponData,
         speed = e.createWeaponEvent.speed,
         lifeTimer = e.createWeaponEvent.bulletLifeTime,
-        damage = e.createWeaponEvent.damage
-      },
-      position = {x = x, y = y}
-    }
+        damage = e.createWeaponEvent.damage,
+        damageTimer = 0.2
+      }
     World:addEntity(bullet)
   end
   e.createWeaponEvent = nil

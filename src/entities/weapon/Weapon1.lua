@@ -8,12 +8,12 @@ function Weapon1:init(x, y)
     self.dragWeapon = {
         sprite = Assets.gun,
         reloadTimer = 0,
-        reloadTime = 0.2,
+        reloadTime = 0.6,
         storePerOne = 1,
         store = 30,
-        bulletSpeed = 500,
-        bulletLifeTime = 1,
-        healthDamage = 20
+        bulletSpeed = 150,
+        bulletLifeTime = 5,
+        healthDamage = 25
       }
 end
 
