@@ -76,6 +76,11 @@ function love.load()
       10 * love.math.random(0, 64)
     )
     World:addEntity(weapon2)
+    local weapon3 = Entities.weapon.Weapon3(
+      10 * love.math.random(0, 64),
+      10 * love.math.random(0, 64)
+    )
+    World:addEntity(weapon3)
   end
   
   local player = Entities.Player(

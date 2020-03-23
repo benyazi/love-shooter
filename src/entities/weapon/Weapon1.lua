@@ -10,7 +10,7 @@ function Weapon1:init(x, y)
         reloadTimer = 0,
         reloadTime = 0.2,
         storePerOne = 1,
-        store = 100,
+        store = 30,
         bulletSpeed = 500,
         bulletLifeTime = 1,
         healthDamage = 20

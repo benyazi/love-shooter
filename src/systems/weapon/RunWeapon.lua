@@ -22,6 +22,7 @@ function system:process(e,dt)
     local rad = math.atan2(worldY-e.position.y,worldX-e.position.x)
     e.createWeaponEvent = {
       rad = rad,
+      weaponData = e.weapon,
       speed = e.weapon.bulletSpeed,
       bulletLifeTime = e.weapon.bulletLifeTime,
       damage = e.weapon.healthDamage
