@@ -24,6 +24,7 @@ function assets.load()
 	image('gun3','assets/sprites/gun3.png')
 	image('bullet','assets/sprites/bullet.png')
 	image('knight','assets/sprites/knight.png')
+	image('wall_1','assets/sprites/walls/wall_1.png')
 	image('ground_1','assets/sprites/ground_1/g_tile_1.png')
 end
 

@@ -24,10 +24,12 @@ function system:process(e)
   -- love.graphics.line(x, y, worldX, worldY)
   love.graphics.draw(e.weapon.sprite, x2,y2, rad, 1, 1)
 
-  love.graphics.setColor(1,0,0)
-  love.graphics.print('Store: ' .. e.weapon.store .. ', reload: ' .. e.weapon.reloadTimer, e.position.x, e.position.y - 20)
-  -- return default color
-  love.graphics.setColor(1,1,1)
+  if e.isPlayer then 
+    love.graphics.setColor(1,0,0)
+    love.graphics.print('Store: ' .. e.weapon.store .. ', reload: ' .. e.weapon.reloadTimer, e.position.x, e.position.y - 20)
+    -- return default color
+    love.graphics.setColor(1,1,1)
+  end
 end
 
 return system

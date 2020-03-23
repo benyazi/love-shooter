@@ -5,7 +5,7 @@ function Player:init(x, y)
     self.position = {x=x,y=y}
     self.drawSprite = {sprite = Assets.knight, level = 2}
     self.isPlayer = true
-    self.health = 100
+    self.health = 500
 end
 
 return Player

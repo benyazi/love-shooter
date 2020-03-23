@@ -21,6 +21,7 @@ Systems = require.tree('src.systems')
 -- create new world
 World = world:new(
   Bump.newWorld(32),
+  Systems.enemy.EnemyCalculation,
   Systems.drag.DragThing,
   Systems.enemy.ActivateEnemy,
   Systems.weapon.CreateBulletWeapon,
@@ -38,7 +39,9 @@ World = world:new(
   Systems.weapon.DrawWeapon,
   Systems.health.DrawHealthLevel,
   Systems.dev.DrawFpsSystem,
-  Systems.clear.ClearEventSystem
+  Systems.enemy.DrawEnemyCount,
+  Systems.clear.ClearEventSystem,
+  Systems.gameManager.GameOverText
 )
 
 --  create system filters
@@ -46,10 +49,15 @@ local drawFilter = Tiny.requireAll('isDrawSystem')
 local drawGuiFilter = Tiny.requireAll('isDrawGuiSystem')
 local updateFilter = Tiny.rejectAny('isDrawSystem','isDrawGuiSystem')
 
+ENEMY_COUNT = 0
+GAME_MANAGER = {
+  gameManager = true
+}
 function love.load()
   love.window.setTitle( 'GAME' )
   -- load all image, sound and etc.
   Assets.load()
+	love.graphics.setNewFont('assets/PixelNES.otf', 8)
   --  save window size to global
   WindowHeight = love.graphics.getHeight()
   WindowWidth = love.graphics.getWidth()
@@ -103,6 +111,7 @@ function love.load()
   --   bulletLifeTime = 1
   -- }
   World:addEntity(player)
+  World:addEntity(GAME_MANAGER)
 
   
 
