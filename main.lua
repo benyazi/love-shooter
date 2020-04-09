@@ -9,6 +9,7 @@ Tiny = require 'lib.tiny-ecs.tiny'
 Inspect = require 'lib.inspect.inspect'
 Bump = require 'lib.bump.bump'
 Beholder = require 'lib.beholder'
+local astray = require 'lib.astray'
 
 -- load world
 local world = require 'src.world'
@@ -21,9 +22,17 @@ Systems = require.tree('src.systems')
 -- create new world
 World = world:new(
   Bump.newWorld(32),
+  Systems.draw.UpdateAnimation,
+  Systems.input.HandleInput,
   Systems.enemy.EnemyCalculation,
   Systems.drag.DragThing,
   Systems.enemy.ActivateEnemy,
+  Systems.enemy.EnemyMoving,
+  Systems.loot.CheckActive,
+  Systems.granate.GranateMoving,
+  Systems.granate.GranateThrow,
+  Systems.granate.GranateTouchDamage,
+  Systems.granate.GranateExplosion,
   Systems.weapon.CreateBulletWeapon,
   Systems.weapon.RunWeapon,
   Systems.weapon.RunWeaponEnemy,
@@ -38,9 +47,15 @@ World = world:new(
   Systems.weapon.DrawBullet,
   Systems.weapon.DrawWeapon,
   Systems.health.DrawHealthLevel,
+  Systems.loot.DrawActiveText,
   Systems.dev.DrawFpsSystem,
   Systems.enemy.DrawEnemyCount,
+  Systems.enemy.EnemyDie,
+  Systems.loot.CheckButton,
+  Systems.loot.OpenLootbox,
+  Systems.loot.LootObject,
   Systems.clear.ClearEventSystem,
+  Systems.clear.RemoveTimer,
   Systems.gameManager.GameOverText
 )
 
@@ -50,6 +65,10 @@ local drawGuiFilter = Tiny.requireAll('isDrawGuiSystem')
 local updateFilter = Tiny.rejectAny('isDrawSystem','isDrawGuiSystem')
 
 ENEMY_COUNT = 0
+STAT = {
+  KILLS = 0
+}
+
 GAME_MANAGER = {
   gameManager = true
 }
@@ -67,63 +86,84 @@ function love.load()
   Camera:zoomTo(cam_scale)
 -- set random seed
   math.randomseed(os.time())
-
-
-  for i=1,10 do
-    local enemyX, enemyY = 10 * love.math.random(0, 64), 10 * love.math.random(0, 64)
-    local enemy = Entities.Enemy(enemyX,enemyY)
-    local weaponData = Entities.weapon.Weapon1(enemyX,enemyY)
-    enemy.weapon = weaponData.dragWeapon
-    World:addEntity(enemy)
-  end
-
-  for i=1,2 do
-    local weapon1 = Entities.weapon.Weapon1(
-      10 * love.math.random(0, 64),
-      10 * love.math.random(0, 64)
-    )
-    World:addEntity(weapon1)
-    local weapon2 = Entities.weapon.Weapon2(
-      10 * love.math.random(0, 64),
-      10 * love.math.random(0, 64)
-    )
-    World:addEntity(weapon2)
-    local weapon3 = Entities.weapon.Weapon3(
-      10 * love.math.random(0, 64),
-      10 * love.math.random(0, 64)
-    )
-    World:addEntity(weapon3)
-  end
   
-  local player = Entities.Player(
-    10 * love.math.random(0, 64),
-    10 * love.math.random(0, 64)
-  )
-  player.keyMoving = {speed = 1}
-  player.targetSmooth = true
-  -- player.weapon = {
-  --   sprite = nil,
-  --   reloadTimer = 0,
-  --   reloadTime = 0.2,
-  --   storePerOne = 1,
-  --   store = 100,
-  --   bulletSpeed = 500,
-  --   bulletLifeTime = 1
-  -- }
-  World:addEntity(player)
+  
   World:addEntity(GAME_MANAGER)
 
   
 
   -- Add sumply entity for print FPS system
   World:addEntity({drawFps = true})
-
-  for i=1,20 do
-    for j=1,20 do
-      local ground = Entities.Ground((i-1)*64,(j-1)*64)
+  local mapH, mapW = 40, 40
+  local generator = astray.Astray:new( mapH/2-1, mapW/2-1, 30, 70, 50, astray.RoomGenerator:new(5, 4, 5, 4, 5) )
+  local dungeon = generator:Generate()
+  local tiles = generator:CellToTiles( dungeon )
+  local playerSpawn = false
+  for y = 0, #tiles[1] do
+    local line = ''
+    for x = 0, #tiles do
+      -- local j,i = x+1,y+1
+      local curX, curY = y*64,x*64
+      local ground = Entities.Ground(curX, curY)
       World:addEntity(ground)
+      if tiles[y][x] == '#' then 
+        World:addEntity(Entities.Wall(curX, curY))
+      elseif playerSpawn == false then
+        local player = Entities.Player(curX, curY)
+        player.keyMoving = {speed = 1}
+        player.targetSmooth = true
+        World:addEntity(Entities.weapon.Weapon2(player.position.x+16, player.position.y+16))
+        World:addEntity(Entities.weapon.Granate(player.position.x+16, player.position.y+16))
+        World:addEntity(player)
+        playerSpawn = true
+      else
+        local randValue = math.random(0,100)
+        if randValue > 75 then
+          local enemy = Entities.Enemy(curX, curY)
+          local weaponData = Entities.weapon.Weapon1(curX, curY)
+          enemy.weapon = weaponData.dragWeapon
+          World:addEntity(enemy)
+        elseif randValue < 15 then
+          local lootBox = Entities.boxes.LootBox(curX+16, curY+16)
+          World:addEntity(lootBox)
+        end
+      end
+      line = line .. tiles[y][x]
     end
+    print(line)
   end
+
+
+  -- for i=1,20 do
+  --   for j=1,20 do
+  --     local curX, curY = (i-1)*64,(j-1)*64
+  --     local ground = Entities.Ground(curX, curY)
+  --     World:addEntity(ground)
+  --     if i == 1 or i == 20 then
+  --       World:addEntity(Entities.Wall(curX, curY))
+  --     elseif j == 20 or j == 1 then
+  --       World:addEntity(Entities.Wall(curX, curY))
+  --     elseif math.random(0,50) > 45 then
+  --       World:addEntity(Entities.Wall(curX, curY))
+  --     elseif math.random(0,100) > 92 then
+  --       local enemy = Entities.Enemy(curX, curY)
+  --       local weaponData = Entities.weapon.Weapon1(curX, curY)
+  --       enemy.weapon = weaponData.dragWeapon
+  --       World:addEntity(enemy)
+  --     elseif math.random(0,100) > 94 then
+  --       local lootBox = Entities.boxes.LootBox(curX+16, curY+16)
+  --       World:addEntity(lootBox)
+  --       -- local weaponType = math.random(2,3)
+  --       -- if weaponType == 1 then 
+  --       --   World:addEntity(Entities.weapon.Weapon1(curX+16, curY+16))
+  --       -- elseif weaponType == 2 then 
+  --       --   World:addEntity(Entities.weapon.Weapon2(curX+16, curY+16))
+  --       -- elseif weaponType == 3 then 
+  --       --   World:addEntity(Entities.weapon.Weapon3(curX+16, curY+16))
+  --       -- end
+  --     end
+  --   end
+  -- end
 end
 
 function love.draw()
@@ -142,6 +182,9 @@ function love.mousepressed(x, y, button)
 end
 
 function love.keypressed(key, scancode, isrepeat)
+  if scancode == 'escape' then 
+    love.event.quit()
+  end
 end
 
 function love.keyreleased(k, scancode)

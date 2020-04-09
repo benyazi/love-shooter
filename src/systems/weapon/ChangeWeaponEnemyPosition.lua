@@ -6,6 +6,9 @@ function system:onAdd(e)
 end
 
 function system:process(e,dt)
+  if e.activatedEnemy == nil then 
+    return 
+  end
   local x,y = e.position.x, e.position.y
   local playerX, playerY = e.activatedEnemy.position.x, e.activatedEnemy.position.y
   e.enemyWeapon.rad = math.atan2(playerY-y,playerX-x)

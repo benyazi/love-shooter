@@ -28,7 +28,15 @@ end
 
 function system:process(e)
   love.graphics.setColor(1,1,1)
-  love.graphics.draw(e.drawSprite.sprite, e.position.x, e.position.y)
+  local scaleX, scaleY = 1,1
+  if e.drawSprite.scale then
+    scaleX, scaleY = e.drawSprite.scale.x, e.drawSprite.scale.y
+  end
+  if e.drawSprite.animation then 
+    e.drawSprite.animation:draw(e.drawSprite.sprite, e.position.x, e.position.y, nil, scaleX, scaleY)
+  else
+    love.graphics.draw(e.drawSprite.sprite, e.position.x, e.position.y, nil, scaleX, scaleY)
+  end
   -- return default color
   love.graphics.setColor(1,1,1)
 end

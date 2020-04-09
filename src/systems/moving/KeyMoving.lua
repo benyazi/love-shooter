@@ -6,7 +6,7 @@ local system = Tiny.processingSystem({
   end
   
   local movingFilter = function(item, other)
-    if other.isPlatform then
+    if other.isWall then
       return 'slide'
     end
     -- else return nil

@@ -1,5 +1,5 @@
 local system = Tiny.processingSystem({
-  filter = Tiny.filter('isEnemy&!activatedEnemy')})
+  filter = Tiny.filter('isEnemy')})
 
 function system:onAdd(e)
 
@@ -15,10 +15,14 @@ end
 function system:process(e)
   local dist = e.watchDistance
   local items, len = World.physics:queryRect(e.position.x - dist/2, e.position.y - dist/2, dist, dist, watchPlayerFilter)
-  for k,v in pairs(items) do
-    e.activatedEnemy = v
-    World:notifyChange(e)
+  if len > 0 then 
+    for k,v in pairs(items) do
+      e.activatedEnemy = v
+    end
+  else 
+    e.activatedEnemy = nil
   end
+  World:notifyChange(e)
 end
 
 return system

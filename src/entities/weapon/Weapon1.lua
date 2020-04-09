@@ -13,7 +13,7 @@ function Weapon1:init(x, y)
         store = 30,
         bulletSpeed = 150,
         bulletLifeTime = 5,
-        healthDamage = 25
+        healthDamage = 1
       }
 end
 

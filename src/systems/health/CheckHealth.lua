@@ -13,6 +13,9 @@ function system:process(e)
         GAME_MANAGER.gameOverText = 'lose'
         World:notifyChange(GAME_MANAGER)
       end
+    elseif e.isEnemy then 
+      e.enemyDieEvent = true
+      World:notifyChange(e)
     else 
       World:removeEntity(e)
       e = nil

@@ -19,7 +19,7 @@ function system:process(e)
         speed = e.createWeaponEvent.speed,
         lifeTimer = e.createWeaponEvent.bulletLifeTime,
         damage = e.createWeaponEvent.damage,
-        damageTimer = 0.2
+        damageTimer = 0.05
       }
       World:addEntity(bullet)
     end
@@ -31,7 +31,7 @@ function system:process(e)
         speed = e.createWeaponEvent.speed,
         lifeTimer = e.createWeaponEvent.bulletLifeTime,
         damage = e.createWeaponEvent.damage,
-        damageTimer = 0.2
+        damageTimer = 0.05
       }
     World:addEntity(bullet)
   end
