@@ -5,7 +5,7 @@ function Pills:init(x, y)
     self.drawSprite = {sprite = Assets.pills, level = 1.4}
     -- self.dragable = true
     self.dragPills = {
-        count = 50
+        count = 2
     }
     self.lootBox = {
       active = false

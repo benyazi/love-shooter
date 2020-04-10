@@ -7,6 +7,9 @@ function Player:init(x, y)
     self.isPlayer = true
     self.canDrag = true
     self.health = 4
+    self.healthMax = 4
+    self.shield = 0
+    self.shieldMax = 4
     self.faith = {
         current = 0,
         max = 100

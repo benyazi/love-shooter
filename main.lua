@@ -49,6 +49,7 @@ World = world:new(
   Systems.health.DrawHealthLevel,
   Systems.loot.DrawActiveText,
   Systems.dev.DrawFpsSystem,
+  Systems.health.DrawPlayerHealthLevel,
   Systems.enemy.DrawEnemyCount,
   Systems.enemy.EnemyDie,
   Systems.loot.CheckButton,
@@ -99,6 +100,7 @@ function love.load()
   local dungeon = generator:Generate()
   local tiles = generator:CellToTiles( dungeon )
   local playerSpawn = false
+  local playerSpawnDot = {x=0,y=0}
   for y = 0, #tiles[1] do
     local line = ''
     for x = 0, #tiles do
@@ -110,7 +112,8 @@ function love.load()
         World:addEntity(Entities.Wall(curX, curY))
       elseif playerSpawn == false then
         local player = Entities.Player(curX, curY)
-        player.keyMoving = {speed = 1}
+        playerSpawnDot.x,playerSpawnDot.y = x,y
+        player.keyMoving = {speed = 2}
         player.targetSmooth = true
         World:addEntity(Entities.weapon.Weapon2(player.position.x+16, player.position.y+16))
         World:addEntity(Entities.weapon.Granate(player.position.x+16, player.position.y+16))
@@ -119,10 +122,12 @@ function love.load()
       else
         local randValue = math.random(0,100)
         if randValue > 75 then
-          local enemy = Entities.Enemy(curX, curY)
-          local weaponData = Entities.weapon.Weapon1(curX, curY)
-          enemy.weapon = weaponData.dragWeapon
-          World:addEntity(enemy)
+          if (x-4) > playerSpawnDot.x and (y-4) > playerSpawnDot.y then 
+            local enemy = Entities.Enemy(curX, curY)
+            local weaponData = Entities.weapon.Weapon1(curX, curY)
+            enemy.weapon = weaponData.dragWeapon
+            World:addEntity(enemy)
+          end
         elseif randValue < 15 then
           local lootBox = Entities.boxes.LootBox(curX+16, curY+16)
           World:addEntity(lootBox)

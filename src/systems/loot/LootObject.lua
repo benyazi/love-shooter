@@ -18,7 +18,21 @@ function system:process(e,dt)
     e = nil 
     World:notifyChange(v)
   elseif e.dragPills and v.health then 
+    -- print('Get pill')
+    -- print(Inspect(v))
     v.health = v.health + e.dragPills.count
+    if v.healthMax and v.healthMax < v.health then 
+      -- print('Max')
+      v.health = v.healthMax
+    end
+    World:removeEntity(e)
+    e = nil 
+    World:notifyChange(v)
+  elseif e.dragShields and v.shield then 
+    v.shield = v.shield + e.dragShields.count
+    if v.shieldMax and v.shieldMax < v.shield then 
+      v.shield = v.shieldMax
+    end
     World:removeEntity(e)
     e = nil 
     World:notifyChange(v)

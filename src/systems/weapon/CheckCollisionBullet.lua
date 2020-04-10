@@ -21,7 +21,16 @@ function system:process(e,dt)
   local touched = false
   for k,v in pairs(items) do
     if v.health then 
-      v.health = v.health - e.bullet.damage
+      local dmg = e.bullet.damage
+      if v.shield and v.shield > 0 then 
+        if v.shield >= dmg then 
+          v.shield = v.shield - dmg
+        else 
+          dmg = dmg - v.shield
+          v.shield = 0
+        end
+      end
+      v.health = v.health - dmg
       touched = true
       World:notifyChange(v)
     end

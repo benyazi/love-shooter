@@ -1,11 +1,11 @@
-local Ammunition = Class{}
+local Shield = Class{}
 
-function Ammunition:init(x, y)
+function Shield:init(x, y)
     self.position = {x=x,y=y}
-    self.drawSprite = {sprite = Assets.ammunition, level = 1.4}
+    self.drawSprite = {sprite = Assets.shield, level = 1.4}
     -- self.dragable = true
-    self.dragAmmunition = {
-        count = 10
+    self.dragShields = {
+        count = 1
     }
     self.lootBox = {
       active = false
@@ -18,4 +18,4 @@ function Ammunition:init(x, y)
     }
 end
 
-return Ammunition
+return Shield
